@@ -1,0 +1,76 @@
+{
+  "axis1_optimizer": [
+    {
+      "optimizer": "sgd",
+      "lr": 0.001,
+      "imbalance": "none",
+      "best_val_acc": 87.6124,
+      "macro_auc": 0.9766
+    },
+    {
+      "optimizer": "adam",
+      "lr": 0.001,
+      "imbalance": "none",
+      "best_val_acc": 66.9331,
+      "macro_auc": 0.7377
+    }
+  ],
+  "axis2_lr": [
+    {
+      "optimizer": "sgd",
+      "lr": 0.001,
+      "imbalance": "none",
+      "best_val_acc": 87.4126,
+      "macro_auc": 0.9761
+    },
+    {
+      "optimizer": "sgd",
+      "lr": 0.0001,
+      "imbalance": "none",
+      "best_val_acc": 84.016,
+      "macro_auc": 0.9638
+    },
+    {
+      "optimizer": "sgd",
+      "lr": 1e-05,
+      "imbalance": "none",
+      "best_val_acc": 74.3257,
+      "macro_auc": 0.8747
+    },
+    {
+      "optimizer": "sgd",
+      "lr": 1e-06,
+      "imbalance": "none",
+      "best_val_acc": 67.033,
+      "macro_auc": 0.7573
+    }
+  ],
+  "axis3_imbalance": [
+    {
+      "optimizer": "sgd",
+      "lr": 0.001,
+      "imbalance": "none",
+      "best_val_acc": 86.6134,
+      "macro_auc": 0.9748
+    },
+    {
+      "optimizer": "sgd",
+      "lr": 0.001,
+      "imbalance": "weighted",
+      "best_val_acc": 75.4246,
+      "macro_auc": 0.9654
+    },
+    {
+      "optimizer": "sgd",
+      "lr": 0.001,
+      "imbalance": "sampler",
+      "best_val_acc": 83.7163,
+      "macro_auc": 0.9728
+    }
+  ],
+  "best_config": {
+    "optimizer": "sgd",
+    "lr": 0.001,
+    "imbalance": "none"
+  }
+}

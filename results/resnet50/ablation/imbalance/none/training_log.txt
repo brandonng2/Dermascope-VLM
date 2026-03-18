@@ -1,0 +1,40 @@
+Epoch 1/20
+train_loss=0.8500  train_acc=70.49%  val_loss=0.6733  val_acc=74.13%
+Epoch 2/20
+train_loss=0.6377  train_acc=76.90%  val_loss=0.5351  val_acc=80.92%
+Epoch 3/20
+train_loss=0.5516  train_acc=79.92%  val_loss=0.5125  val_acc=81.12%
+Epoch 4/20
+train_loss=0.5007  train_acc=81.84%  val_loss=0.4689  val_acc=82.52%
+Epoch 5/20
+train_loss=0.4571  train_acc=83.20%  val_loss=0.4470  val_acc=83.72%
+Epoch 6/20
+train_loss=0.4154  train_acc=85.10%  val_loss=0.4249  val_acc=84.32%
+Epoch 7/20
+train_loss=0.3855  train_acc=85.92%  val_loss=0.4442  val_acc=84.12%
+Epoch 8/20
+train_loss=0.3534  train_acc=86.97%  val_loss=0.4518  val_acc=84.22%
+Epoch 9/20
+train_loss=0.3339  train_acc=87.74%  val_loss=0.4458  val_acc=84.32%
+Epoch 10/20
+train_loss=0.3019  train_acc=88.88%  val_loss=0.4538  val_acc=84.72%
+Epoch 11/20
+train_loss=0.2889  train_acc=89.54%  val_loss=0.4167  val_acc=85.41%
+Epoch 12/20
+train_loss=0.2650  train_acc=90.20%  val_loss=0.4937  val_acc=85.71%
+Epoch 13/20
+train_loss=0.2471  train_acc=90.69%  val_loss=0.4801  val_acc=82.92%
+Epoch 14/20
+train_loss=0.2252  train_acc=91.45%  val_loss=0.4820  val_acc=85.11%
+Epoch 15/20
+train_loss=0.2216  train_acc=92.07%  val_loss=0.4854  val_acc=84.92%
+Epoch 16/20
+train_loss=0.2054  train_acc=92.50%  val_loss=0.4397  val_acc=85.21%
+Epoch 17/20
+train_loss=0.1916  train_acc=93.09%  val_loss=0.5070  val_acc=86.21%
+Epoch 18/20
+train_loss=0.1838  train_acc=93.16%  val_loss=0.4710  val_acc=85.41%
+Epoch 19/20
+train_loss=0.1813  train_acc=93.62%  val_loss=0.5029  val_acc=86.71%
+Epoch 20/20
+train_loss=0.1578  train_acc=94.31%  val_loss=0.5238  val_acc=85.81%
