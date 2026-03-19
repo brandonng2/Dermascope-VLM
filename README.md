@@ -1,4 +1,4 @@
-# Dermascope-VLM
+# DermaVision
 
 Comprehensive skin disease classification on HAM10000 using CNNs, Transformers, and Vision-Language Models. Compares a custom CNN, fine-tuned ResNet-50, and fine-tuned Swin-T against zero-shot CLIP and DermLIP baselines. Includes sequential ablations over optimizer, learning rate, and class imbalance strategy for supervised models, plus Grad-CAM interpretability analysis.
 
