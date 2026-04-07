@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DermaVision — Skin Lesion Classification & Localization</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <span class="nav-logo">DermaVision</span>
+      <div class="nav-links">
+        <a href="#abstract">Abstract</a>
+        <a href="#methods">Methods</a>
+        <a href="#results">Results</a>
+        <a href="#code">Code</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-tag"> CNN · Transformer · ViT </div>
+    <h1 class="hero-title">
+      Comparing Supervised and<br />
+      Zero-Shot Vision-Language Models<br />
+      <em>for Skin Disease Classification<br />and Lesion Localization</em>
+    </h1>
+    <p class="hero-subtitle">on HAM10000</p>
+    <div class="hero-authors">
+      <span class="author">Brandon Ng</span>
+    </div>
+    <div class="hero-links">
+      <a href="#" class="btn btn-primary">Paper</a>
+      <a href="https://github.com/brandonng2/DermaVision-Analysis" class="btn btn-secondary" target="_blank">GitHub</a>
+      <a href="#results" class="btn btn-ghost">Results ↓</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">5</span>
+        <span class="stat-label">Architectures</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">10,015</span>
+        <span class="stat-label">Images</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">7</span>
+        <span class="stat-label">Skin Lesion Classes</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">0.9797</span>
+        <span class="stat-label">Best Macro AUC</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABSTRACT -->
+  <section id="abstract">
+    <div class="section-inner">
+      <div class="section-label">Abstract</div>
+      <div class="abstract-body">
+        <p>
+          Melanoma incidence has increased by <strong>46.6%</strong> over the past decade, yet early detection remains limited by dermatologist shortages and the visual subtlety of early-stage lesions. We systematically evaluate five architectures spanning custom CNNs, pretrained CNNs, Transformers, and vision-language models on the HAM10000 dermoscopy dataset for 7-class skin disease classification and weakly supervised lesion localization.
+        </p>
+        <p>
+          Hyperparameters for supervised models are selected via sequential ablation rather than exhaustive grid search. Zero-shot CLIP and DermLIP are evaluated across seven prompt templates. Grad-CAM heatmaps and self-attention maps are compared against ground truth segmentation masks using Intersection over Union (IoU) and Dice score to quantify spatial localization quality.
+        </p>
+        <p>
+          Fine-tuned <strong>ResNet-50</strong> achieves the strongest classification and localization performance, while zero-shot VLMs demonstrate competitive accuracy on majority classes but fail to spatially ground lesion regions — revealing that <em>classification accuracy and spatial grounding are dissociable</em>.
+        </p>
+      </div>
+
+      <div class="finding-banner">
+        <div class="finding-icon">↯</div>
+        <div class="finding-text">
+          <strong>Central Finding</strong>
+          Zero-shot VLMs can achieve competitive global classification accuracy while producing near-zero IoU against lesion masks — demonstrating that correct predictions do not imply spatial understanding.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- METHODS -->
+  <section id="methods">
+    <div class="section-inner">
+      <div class="section-label">Methods</div>
+      <h2 class="section-title">Five Models. Three Paradigms.</h2>
+
+      <div class="model-grid">
+        <div class="model-card scratch">
+          <div class="model-tag">From Scratch</div>
+          <div class="model-name">Custom CNN</div>
+          <div class="model-desc">4-block conv architecture with BatchNorm, GAP, and Dropout. Baseline measuring the cost of pretraining.</div>
+          <div class="model-meta">Grad-CAM: block4[0]</div>
+        </div>
+        <div class="model-card supervised">
+          <div class="model-tag">Fine-tuned</div>
+          <div class="model-name">ResNet-50</div>
+          <div class="model-desc">ImageNet pretrained. FC replaced with Dropout(0.4) + Linear(2048→7). Full network fine-tuned end-to-end.</div>
+          <div class="model-meta">Grad-CAM: layer4[-1]</div>
+        </div>
+        <div class="model-card supervised">
+          <div class="model-tag">Fine-tuned</div>
+          <div class="model-name">Swin-T</div>
+          <div class="model-desc">Swin Transformer Tiny via timm. Window-based self-attention. Dropout injected at head.drop.</div>
+          <div class="model-meta">Grad-CAM: layers[-1].blocks[-1].attn</div>
+        </div>
+        <div class="model-card vlm">
+          <div class="model-tag">Zero-Shot</div>
+          <div class="model-name">CLIP ViT-B/16</div>
+          <div class="model-desc">OpenAI CLIP pretrained on 400M internet image-text pairs. Zero-shot via cosine similarity with class prompts.</div>
+          <div class="model-meta">Attn: resblocks[-1] CLS→patch</div>
+        </div>
+        <div class="model-card vlm">
+          <div class="model-tag">Zero-Shot</div>
+          <div class="model-name">DermLIP ViT-B/16</div>
+          <div class="model-desc">CLIP fine-tuned on Derm1M — 1M dermatology image-text pairs across 390 skin conditions.</div>
+          <div class="model-meta">Attn: resblocks[-1] CLS→patch</div>
+        </div>
+      </div>
+
+      <div class="methods-row">
+        <!-- Ablation -->
+        <div class="method-block">
+          <h3>Sequential Ablation</h3>
+          <p>Hyperparameters selected via three sequential axes, each conditioned on the best result from the prior, reducing search from 24 to 9 runs per model.</p>
+          <div class="ablation-flow">
+            <div class="ablation-step">
+              <div class="ablation-num">1</div>
+              <div class="ablation-content">
+                <strong>Optimizer</strong>
+                <span>SGD vs Adam</span>
+              </div>
+            </div>
+            <div class="ablation-arrow">↓</div>
+            <div class="ablation-step">
+              <div class="ablation-num">2</div>
+              <div class="ablation-content">
+                <strong>Learning Rate</strong>
+                <span>1e-3 / 1e-4 / 1e-5 / 1e-6</span>
+              </div>
+            </div>
+            <div class="ablation-arrow">↓</div>
+            <div class="ablation-step">
+              <div class="ablation-num">3</div>
+              <div class="ablation-content">
+                <strong>Imbalance</strong>
+                <span>None / Weighted CE / Sampler</span>
+              </div>
+            </div>
+          </div>
+          <div class="best-configs">
+            <div class="config-row header">
+              <span>Model</span><span>Optimizer</span><span>LR</span><span>Imbalance</span>
+            </div>
+            <div class="config-row">
+              <span>CNN</span><span>Adam</span><span>1e-3</span><span>None</span>
+            </div>
+            <div class="config-row">
+              <span>ResNet-50</span><span>SGD</span><span>1e-3</span><span>None</span>
+            </div>
+            <div class="config-row">
+              <span>Swin-T</span><span>SGD</span><span>1e-3</span><span>None</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grounding -->
+        <div class="method-block">
+          <h3>Grounding Evaluation</h3>
+          <p>All heatmaps binarized at τ = 0.5 and compared against ground truth segmentation masks from HAM10000 using IoU and Dice score.</p>
+          <div class="formula-block">
+            <div class="formula">
+              <span class="formula-name">IoU</span>
+              <span class="formula-eq">= |H ∩ M| / |H ∪ M|</span>
+            </div>
+            <div class="formula">
+              <span class="formula-name">Dice</span>
+              <span class="formula-eq">= 2|H ∩ M| / (|H| + |M|)</span>
+            </div>
+          </div>
+          <div class="method-note">
+            <strong>VLM Attention:</strong> Standard Grad-CAM fails for CLIP/DermLIP because <code>encode_image</code> pools through the CLS token, leaving patch gradients zero. Instead, CLS-to-patch self-attention weights are extracted from the final resblock, averaged over heads, and reshaped to a 14×14 spatial grid.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results">
+    <div class="section-inner">
+      <div class="section-label">Results</div>
+      <h2 class="section-title">Classification & Localization</h2>
+
+      <!-- Classification table -->
+      <div class="results-block">
+        <h3>Classification Performance</h3>
+        <div class="table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Paradigm</th>
+                <th>Accuracy</th>
+                <th>Macro AUC</th>
+                <th>Micro AUC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Custom CNN</td>
+                <td><span class="tag scratch-tag">From Scratch</span></td>
+                <td>57.98%</td>
+                <td>0.8597</td>
+                <td>0.8849</td>
+              </tr>
+              <tr class="best-row">
+                <td><strong>ResNet-50</strong> ★</td>
+                <td><span class="tag sup-tag">Fine-tuned</span></td>
+                <td><strong>88.62%</strong></td>
+                <td><strong>0.9797</strong></td>
+                <td><strong>0.9894</strong></td>
+              </tr>
+              <tr>
+                <td>Swin-T</td>
+                <td><span class="tag sup-tag">Fine-tuned</span></td>
+                <td>86.13%</td>
+                <td>0.9760</td>
+                <td>0.9870</td>
+              </tr>
+              <tr>
+                <td>CLIP ViT-B/16</td>
+                <td><span class="tag vlm-tag">Zero-Shot</span></td>
+                <td>11.88%</td>
+                <td>0.6079</td>
+                <td>0.3241</td>
+              </tr>
+              <tr>
+                <td>DermLIP ViT-B/16</td>
+                <td><span class="tag vlm-tag">Zero-Shot</span></td>
+                <td>67.76%</td>
+                <td>0.8680</td>
+                <td>0.9062</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Grounding table -->
+      <div class="results-block">
+        <h3>Grounding Performance (Grad-CAM / Attention vs GT Masks)</h3>
+        <div class="table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Method</th>
+                <th>Overall IoU</th>
+                <th>Overall Dice</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Custom CNN</td>
+                <td><span class="method-tag">Grad-CAM</span></td>
+                <td>0.3427</td>
+                <td>0.4629</td>
+              </tr>
+              <tr class="best-row">
+                <td><strong>ResNet-50</strong> ★</td>
+                <td><span class="method-tag">Grad-CAM</span></td>
+                <td><strong>0.4207</strong></td>
+                <td><strong>0.5745</strong></td>
+              </tr>
+              <tr>
+                <td>Swin-T</td>
+                <td><span class="method-tag">Grad-CAM</span></td>
+                <td>0.0737</td>
+                <td>0.1186</td>
+              </tr>
+              <tr class="vlm-row">
+                <td>CLIP ViT-B/16</td>
+                <td><span class="method-tag attn-tag">Attention</span></td>
+                <td class="low">0.0011</td>
+                <td class="low">0.0021</td>
+              </tr>
+              <tr class="vlm-row">
+                <td>DermLIP ViT-B/16</td>
+                <td><span class="method-tag attn-tag">Attention</span></td>
+                <td class="low">0.0050</td>
+                <td class="low">0.0082</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">VLMs achieve near-zero localization despite competitive classification accuracy, demonstrating the dissociation between global prediction and spatial grounding.</p>
+      </div>
+
+      <!-- Per-class AUC -->
+      <div class="results-block">
+        <h3>Per-Class AUC</h3>
+        <div class="table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>CNN</th>
+                <th>ResNet-50</th>
+                <th>Swin-T</th>
+                <th>CLIP</th>
+                <th>DermLIP</th>
+              </tr>
+            </thead>
+            <tbody id="perclass-body">
+              <tr><td>MEL</td><td>0.8516</td><td class="best-cell">0.9559</td><td>0.9409</td><td>0.5937</td><td>0.7304</td></tr>
+              <tr><td>NV</td><td>0.8682</td><td class="best-cell">0.9737</td><td>0.9667</td><td>0.4905</td><td>0.8709</td></tr>
+              <tr><td>BCC</td><td>0.9199</td><td class="best-cell">0.9956</td><td>0.9951</td><td>0.5804</td><td>0.9787</td></tr>
+              <tr><td>AKIEC</td><td>0.9040</td><td>0.9670</td><td class="best-cell">0.9751</td><td>0.7892</td><td>0.8800</td></tr>
+              <tr><td>BKL</td><td>0.7669</td><td class="best-cell">0.9655</td><td>0.9567</td><td>0.6272</td><td>0.7227</td></tr>
+              <tr><td>DF</td><td>0.7394</td><td class="best-cell">1.0000</td><td>0.9983</td><td>0.6335</td><td>0.9621</td></tr>
+              <tr><td>VASC</td><td>0.9681</td><td class="best-cell">0.9998</td><td>0.9994</td><td>0.5406</td><td>0.9314</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Prompt sensitivity -->
+      <div class="results-block">
+        <h3>Prompt Sensitivity (Zero-Shot VLMs)</h3>
+        <div class="prompt-grid">
+          <div class="prompt-col">
+            <div class="prompt-header clip">CLIP — largely insensitive</div>
+            <div class="prompt-rows" id="clip-prompts"></div>
+          </div>
+          <div class="prompt-col">
+            <div class="prompt-header dermlip">DermLIP — highly sensitive</div>
+            <div class="prompt-rows" id="dermlip-prompts"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CODE -->
+  <section id="code">
+    <div class="section-inner">
+        <div class="section-label">Grad-CAM / Attention</div>
+        <h2 class="section-title">Localization Overview</h2>
+        <p class="demo-intro">
+            Each panel shows one example per class: the original dermoscopy image (top), the Grad-CAM or self-attention heatmap overlay (middle), and the binarized heatmap against the ground truth segmentation mask with IoU and Dice scores (bottom). 
+        </p>
+
+        <div class="code-tabs">
+        <button class="tab-btn active" data-tab="cnn">CNN</button>
+        <button class="tab-btn" data-tab="resnet">ResNet-50</button>
+        <button class="tab-btn" data-tab="swint">Swin-T</button>
+        <button class="tab-btn" data-tab="clip">CLIP</button>
+        <button class="tab-btn" data-tab="dermlip">DermLIP</button>
+        </div>
+
+        <div class="code-panels">
+        <div class="code-panel active" id="tab-cnn">
+            <img src="results/cnn_results.png" alt="CNN Grad-CAM examples" class="gradcam-img" />
+        </div>
+        <div class="code-panel" id="tab-resnet">
+            <img src="results/resnet_results.png" alt="ResNet-50 Grad-CAM examples" class="gradcam-img" />
+        </div>
+        <div class="code-panel" id="tab-swint">
+            <img src="results/swint_results.png" alt="Swin-T Grad-CAM examples" class="gradcam-img" />
+        </div>
+        <div class="code-panel" id="tab-clip">
+            <img src="results/clip_results.png" alt="CLIP attention examples" class="gradcam-img" />
+        </div>
+        <div class="code-panel" id="tab-dermlip">
+            <img src="results/dermlip_results.png" alt="DermLIP attention examples" class="gradcam-img" />
+        </div>
+        </div>
+
+        <div class="gradcam-legend">
+        <div class="legend-item"><span class="legend-dot sup"></span>Supervised — Grad-CAM</div>
+        <div class="legend-item"><span class="legend-dot vlm"></span>VLM — CLS self-attention</div>
+        <div class="legend-item"><span class="legend-dot good"></span>Green title = correct prediction</div>
+        <div class="legend-item"><span class="legend-dot bad"></span>Red title = incorrect prediction</div>
+        </div>
+
+      <div class="repo-card">
+        <div class="repo-icon">⌥</div>
+        <div class="repo-info">
+          <strong>DermaVision</strong>
+          <span>PyTorch · open_clip · timm · HAM10000</span>
+        </div>
+        <a href="https://github.com/brandonng2/DermaVision-Analysis" class="btn btn-primary" target="_blank">View on GitHub →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-left">
+        <strong>DermaVision</strong>
+        <span>2026</span>
+      </div>
+      <div class="footer-right">
+        <span>Brandon Ng</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
