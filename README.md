@@ -133,7 +133,7 @@ Dermascope-VLM/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/Dermascope-VLM.git
+git clone https://github.com/brandonng2/Dermascope-VLM.git
 cd Dermascope-VLM
 ```
 
